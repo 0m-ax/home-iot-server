@@ -9,12 +9,7 @@ console.log('listening on *:3000');
 });
 let l = new Socket();
 l.on("newDeviceTrait",({device,trait})=>{
-    console.log(device.name,device.id,trait.traitID)
-    trait.set({
-        red:0,
-        green:0,
-        blue:0
-    })
+
 })
 l.on("deviceTraitUpdate",({device,trait})=>{
     send();

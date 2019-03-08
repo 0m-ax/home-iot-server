@@ -80,6 +80,22 @@
                             deviceTraitPropertiesEl.appendChild(blueEl);
                             deviceTraitEl.appendChild(deviceTraitPropertiesEl);
                         }
+                        if(traitID == "brightness"){
+                            deviceTraitEl.appendChild(document.createTextNode("Brightness:"))
+                            let onChange = ()=>{
+                                socket.emit("setTrait",deviceID,traitID,{
+                                    value:valueRangeEl.value,
+                                })
+                            }
+                            let valueRangeEl = document.createElement("input")
+                            valueRangeEl.type = "range";
+                            valueRangeEl.min="0";
+                            valueRangeEl.max = "255";
+                            valueRangeEl.value = trait.value;
+                            valueRangeEl.step = 1;
+                            valueRangeEl.onchange = onChange;
+                            deviceTraitEl.appendChild(valueRangeEl);
+                        }
                     }
                     deviceEl.appendChild(deviceTraitsEl)
                     devicesEl.appendChild(deviceEl);
