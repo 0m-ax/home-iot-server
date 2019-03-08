@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+    <ul id="devices"></ul>
+    <script>
+            var socket = io();
+            let devicesEl = document.getElementById("devices");
+            socket.on("devices",(newDevices)=>{
+                while (devicesEl.firstChild) {
+                    devicesEl.removeChild(devicesEl.firstChild);
+                }
+
+                for(let deviceID in newDevices){
+
+                    let device = newDevices[deviceID];
+                    let deviceEl = document.createElement("li")
+                    deviceEl.appendChild(document.createTextNode(device.name+":"))
+                    let deviceTraitsEl = document.createElement("ul")
+
+                    for(let traitID in device.traits){
+
+                        let trait = device.traits[traitID];
+                        deviceTraitEl = document.createElement("li")
+                        deviceTraitsEl.appendChild(deviceTraitEl);
+
+                        if(traitID == "colour"){
+                            deviceTraitEl.appendChild(document.createTextNode("Colour:"))
+                            let deviceTraitPropertiesEl = document.createElement("ul");
+                            let onChange = ()=>{
+                                socket.emit("setTrait",deviceID,traitID,{
+                                    red:redRangeEl.value,
+                                    green:greenRangeEl.value,
+                                    blue:blueRangeEl.value
+                                })
+                            }
+
+                            let redEl = document.createElement("li");
+                            redEl.appendChild(document.createTextNode("Red:"))
+                            let redRangeEl = document.createElement("input")
+                            redRangeEl.type = "range";
+                            redRangeEl.min="0";
+                            redRangeEl.max = "255";
+                            redRangeEl.value = trait.red;
+                            redRangeEl.step = 1;
+                            redRangeEl.onchange = onChange;
+                            redEl.appendChild(redRangeEl);
+                            deviceTraitPropertiesEl.appendChild(redEl);
+
+                            let greenEL = document.createElement("li");
+                            greenEL.appendChild(document.createTextNode("Green:"))
+                            let greenRangeEl = document.createElement("input")
+                            greenRangeEl.type = "range";
+                            greenRangeEl.min="0";
+                            greenRangeEl.max = "255";
+                            greenRangeEl.value = trait.green;
+                            greenRangeEl.step = 1;
+                            greenRangeEl.onchange = onChange;
+                            greenEL.appendChild(greenRangeEl);
+                            deviceTraitPropertiesEl.appendChild(greenEL);
+
+                            let blueEl = document.createElement("li");
+                            blueEl.appendChild(document.createTextNode("Blue:"));
+                            let blueRangeEl = document.createElement("input")
+                            blueRangeEl.type = "range";
+                            blueRangeEl.min="0";
+                            blueRangeEl.max = "255";
+                            blueRangeEl.value = trait.blue;
+                            blueRangeEl.step = 1;
+                            blueRangeEl.onchange = onChange;
+                            blueEl.appendChild(blueRangeEl);
+                            deviceTraitPropertiesEl.appendChild(blueEl);
+                            deviceTraitEl.appendChild(deviceTraitPropertiesEl);
+                        }
+                    }
+                    deviceEl.appendChild(deviceTraitsEl)
+                    devicesEl.appendChild(deviceEl);
+                }
+            })
+        </script>
+</body>
+</html>
